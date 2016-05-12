@@ -98,7 +98,7 @@ function balanceHistory(account, tariff, record, callback) {
     if ((account.balance === null) || (Number(account.balance).toFixed(2) !== Number(record.summa).toFixed(2))) {
         // TODO: проверить за эту дату загрузку
         history.accountId = account.id;
-        history.dateAt = record.date_at.format();
+        history.dateAt = record.date_at.format('YYYY-MM-DD');
         history.oldBalance = account.balance;
         if (account.balance === null) {
             history.cost = 0 - Number(tariff.cost);
