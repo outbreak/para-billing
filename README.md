@@ -4,22 +4,22 @@
 
 1. Клонируйте репозитарий проекта:
 
-```bash
-git clone https://github.com/outbreak/para-billing.git
-```
+   ```bash
+   git clone https://github.com/outbreak/para-billing.git
+   ```
 
 
 2. Переход в каталог проекта:
 
-```bash
-cd para-billing
-```
+   ```bash
+   cd para-billing
+   ```
 
 3. Установка необходимых зависимостей проекта:
 
-```bash
-npm install
-```
+   ```bash
+   npm install
+   ```
 
 
 ## Запуск загрузчика
@@ -30,7 +30,7 @@ npm install
 node loder.js
 ```
 
-Чтобы очистить базу данных перед тем как загрузить данные:
+Чтобы очистить базу данных перед тем как загрузить данные (**Осторожно!** Это уничтожит данные во все таблицах):
 
 ```bash
 TRUNCATE=true node loader.js
@@ -64,5 +64,11 @@ npm start
 PORT=3000
 ADMIN_LOGIN=admin
 ADMIN_PASSWORD=password
+
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_NAME=para_billing
+DB_USER=root
+DB_PASSWORD=password
 ```
 
