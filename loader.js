@@ -114,6 +114,7 @@ function balanceHistory(account, tariff, record, callback) {
                 old_balance: h.oldBalance
             });
             account.balance = Number(record.summa).toFixed(2);
+            account.isActive = (Number(account.balance) >= 0);
             account.save().then(function() {
                 logger.info('Account:', {
                     id: account.id,
