@@ -204,7 +204,7 @@ function loadFile(filename, callback) {
 function readDataFilesInputDirectory(callback) {
     fs.readdir(dataFilesInputDirectory, function(error, names) {
         var filenames = names.filter(function(name) {
-            return fs.statSync(path.join(dataFilesInputDirectory, name)).isFile();
+            return fs.statSync(path.join(dataFilesInputDirectory, name)).isFile() && (path.extname(name) === '.txt');
         });
         return callback(null, filenames);
     });
