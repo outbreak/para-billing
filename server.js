@@ -29,5 +29,5 @@ function onDatabaseConnectionError(error) {
 }
 
 db.sequelize.sync({
-    force: config.truncateDatabaseTables
+    force: false
 }).then(onDatabaseConnectionSuccess, onDatabaseConnectionError);

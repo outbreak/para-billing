@@ -1,24 +1,25 @@
+'use strict';
 /* jshint node: true */
 
 module.exports = {
-    truncateDatabaseTables: true,
+    truncateDatabaseTables: process.env.TRUNCATE || false,
     mysql: {
-        host: '127.0.0.1',
-        port: 3306,
-        database: 'para_billing',
-        username: 'root',
-        password: null
+        host: process.env.DB_HOST || '127.0.0.1',
+        port: process.env.DB_PORT || 3306,
+        database: process.env.DB_NAME || 'para_billing',
+        username: process.env.DB_USER || 'root',
+        password: process.env.DB_PASSWORD || null
     },
     server: {
-        port: 3000,
+        port: process.env.PORT || 3000,
         admin: {
-            username: 'admin',
-            password: 'password'
+            username: process.env.ADMIN_LOGIN || 'admin',
+            password: process.env.ADMIN_PASSWORD || 'password'
         }
     },
     folders: {
-        input: 'data',
-        output: 'data/processed',
-        reports: 'data/reports',
+        input: process.env.DATA_INPUT_FOLDER || 'data',
+        output: process.env.DATA_OUTPUT_FOLDER || 'data/processed',
+        reports: process.env.DATA_REPORTS_FOLDER || 'data/reports',
     }
 };
