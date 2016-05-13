@@ -30,6 +30,19 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
             defaultValue: true
+        },
+        ip: {
+            type: DataTypes.STRING,
+            field: 'ip',
+            defaultValue: '127.0.0.1',
+            validate: {
+                isIP: true
+            }
+        },
+        port: {
+            type: DataTypes.INTEGER,
+            field: 'port',
+            defaultValue: 0
         }
     }, {
         underscored: true
