@@ -2,6 +2,8 @@
 /* jshint node: true */
 
 var fs = require('fs-extra'),
+    EventEmitter = require('events'),
+    util = require('util'),
     path = require('path'),
     async = require('async'),
     parser = require('csv-parse'),
@@ -14,6 +16,58 @@ var fs = require('fs-extra'),
 var dataFilesInputDirectory = path.join(__dirname, config.folders.input),
     dataFilesOutputDirectory = path.join(__dirname, config.folders.output),
     dataFilesReportsDirectory = path.join(__dirname, config.folders.reports);
+
+function DisableFileEmitter() {
+    var self = this;
+
+    EventEmitter.call(this);
+
+    this.list = [];
+
+    this.on('add', function(accountId, ip, port) {
+        self.list.push({
+            account: accountId,
+            ip: ip,
+            port: port
+        });
+    });
+
+    this.on('save', function(file) {
+        console.log('Write Disable file: %s', file);
+        fs.writeJson(file, self.list, function(err) {
+            self.list = [];
+            return err;
+        });
+    });
+}
+util.inherits(DisableFileEmitter, EventEmitter);
+var disableFileEmitter = new DisableFileEmitter();
+
+function EnableFileEmitter() {
+    var self = this;
+
+    EventEmitter.call(this);
+
+    this.list = [];
+
+    this.on('add', function(accountId, ip, port) {
+        self.list.push({
+            account: accountId,
+            ip: ip,
+            port: port
+        });
+    });
+
+    this.on('save', function(file) {
+        console.log('Write Enable file: %s', file);
+        fs.writeJson(file, self.list, function(err) {
+            self.list = [];
+            return err;
+        });
+    });
+}
+util.inherits(EnableFileEmitter, EventEmitter);
+var enableFileEmitter = new EnableFileEmitter();
 
 function uploadRecord(record, callback) {
     process.stdout.write('.');
@@ -115,6 +169,11 @@ function balanceHistory(account, tariff, record, callback) {
             });
             account.balance = Number(record.summa).toFixed(2);
             account.isActive = (Number(account.balance) >= 0);
+            if (Number(account.balance) < 0) {
+                disableFileEmitter.emit('add', account.id, account.ip, account.port);
+            } else {
+                enableFileEmitter.emit('add', account.id, account.ip, account.port);
+            }
             account.save().then(function() {
                 logger.info('Account:', {
                     id: account.id,
@@ -185,7 +244,12 @@ function loadFile(filename, callback) {
                             if (err) {
                                 return callback(err);
                             }
+
                             console.log('\nUpload records complete.');
+
+                            disableFileEmitter.emit('save', path.join(reportsPath, 'disable.json'));
+                            enableFileEmitter.emit('save', path.join(reportsPath, 'enable.json'));
+
 
                             if (fs.existsSync(path.join(dataFilesOutputDirectory, filename))) {
                                 fs.removeSync(path.join(dataFilesOutputDirectory, filename));
