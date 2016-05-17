@@ -6,6 +6,10 @@
     "start": "node server.js"
   },
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/outbreak/para-billing.git"
+  },
   "dependencies": {
     "async": "^2.0.0-rc.4",
     "body-parser": "^1.15.1",
@@ -13,6 +17,7 @@
     "express": "^4.13.4",
     "fs-extra": "^0.30.0",
     "iconv": "^2.2.0",
+    "minimatch": "^3.0.0",
     "moment": "^2.13.0",
     "mysql": "^2.10.2",
     "sequelize": "^3.22.0",
