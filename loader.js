@@ -9,7 +9,7 @@ var fs = require('fs-extra'),
     parser = require('csv-parse'),
     winston = require('winston'),
     moment = require('moment'),
-    Iconv = require('iconv').Iconv,
+    iconv = require('iconv-lite'),
     db = require('./app/database.js'),
     config = require('./app/config.js');
 
@@ -201,7 +201,7 @@ function loadFile(filename, callback) {
     var reportsPath = path.join(dataFilesReportsDirectory, date.format('YYYY-MM-DD'));
 
     fs.createReadStream(path.join(dataFilesInputDirectory, filename))
-        .pipe(new Iconv('cp1251', 'utf-8'))
+        .pipe(iconv.decodeStream('win1251'))
         .pipe(parser({
             delimiter: ';',
             columns: true
