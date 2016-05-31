@@ -147,33 +147,40 @@ function uploadRecord(record, callback) {
 function balanceHistory(account, tariff, record, callback) {
     var BalanceHistory = db.models.BalanceHistory,
         logger = record.logger,
-        history = {};
+        newHistory = {};
 
     if ((account.balance === null) || (Number(account.balance).toFixed(2) !== Number(record.summa).toFixed(2))) {
         // TODO: проверить за эту дату загрузку
-        history.accountId = account.id;
-        history.dateAt = record.date_at.format('YYYY-MM-DD');
-        history.oldBalance = account.balance;
+        newHistory.accountId = account.id;
+        newHistory.dateAt = record.date_at.format('YYYY-MM-DD');
+        newHistory.oldBalance = account.balance;
         if (account.balance === null) {
-            history.cost = 0 - Number(tariff.cost);
+            newHistory.cost = 0 - Number(tariff.cost);
         } else {
-            history.cost = Number(record.summa) - Number(account.balance);
+            newHistory.cost = Number(record.summa) - Number(account.balance);
         }
 
-        BalanceHistory.create(history).then(function(h) {
+        BalanceHistory.create(newHistory).then(function(history) {
             logger.info('BalanceHistory:', {
-                account_id: h.accountId,
-                cost: h.cost,
-                date_at: h.dateAt,
-                old_balance: h.oldBalance
+                account_id:     history.accountId,
+                cost:           history.cost,
+                date_at:        history.dateAt,
+                old_balance:    history.oldBalance
             });
             account.balance = Number(record.summa).toFixed(2);
             account.isActive = (Number(account.balance) >= 0);
-            if (Number(account.balance) < 0) {
+
+            if ((Number(history.oldBalance).toFixed(2) >= 0)  && (Number(account.balance).toFixed(2) < 0)) {
+
+                // Если старый баланс больше или равен нулю и новый баланс стал меньше нуля
                 disableFileEmitter.emit('add', account.id, account.ip, account.port);
-            } else {
+
+            } else if ((Number(history.oldBalance).toFixed(2) < 0) && (Number(account.balance).toFixed(2) >= 0)) {
+
+                // Если старый баланс был меньше нуля и новый баланс стал больше или равен нулю
                 enableFileEmitter.emit('add', account.id, account.ip, account.port);
             }
+
             account.save().then(function() {
                 logger.info('Account:', {
                     id: account.id,
