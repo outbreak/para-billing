@@ -34,7 +34,9 @@ function DisableFileEmitter() {
 
     this.on('save', function(file) {
         console.log('Write Disable file: %s', file);
-        fs.writeJson(file, self.list, function(err) {
+        fs.writeJson(file, self.list, {
+            spaces: 2
+        }, function(err) {
             self.list = [];
             return err;
         });
@@ -60,7 +62,9 @@ function EnableFileEmitter() {
 
     this.on('save', function(file) {
         console.log('Write Enable file: %s', file);
-        fs.writeJson(file, self.list, function(err) {
+        fs.writeJson(file, self.list, {
+            spaces: 2
+        }, function(err) {
             self.list = [];
             return err;
         });
@@ -162,15 +166,15 @@ function balanceHistory(account, tariff, record, callback) {
 
         BalanceHistory.create(newHistory).then(function(history) {
             logger.info('BalanceHistory:', {
-                account_id:     history.accountId,
-                cost:           history.cost,
-                date_at:        history.dateAt,
-                old_balance:    history.oldBalance
+                account_id: history.accountId,
+                cost: history.cost,
+                date_at: history.dateAt,
+                old_balance: history.oldBalance
             });
             account.balance = Number(record.summa).toFixed(2);
             account.isActive = (Number(account.balance) >= 0);
 
-            if ((Number(history.oldBalance).toFixed(2) >= 0)  && (Number(account.balance).toFixed(2) < 0)) {
+            if ((Number(history.oldBalance).toFixed(2) >= 0) && (Number(account.balance).toFixed(2) < 0)) {
 
                 // Если старый баланс больше или равен нулю и новый баланс стал меньше нуля
                 disableFileEmitter.emit('add', account.id, account.ip, account.port);
