@@ -1,6 +1,8 @@
 'use strict';
 /* jshint node: true */
 
+var moment = require('moment');
+
 module.exports = function(sequelize, DataTypes) {
     return sequelize.define('balance_histories', {
         cost: {
@@ -23,6 +25,11 @@ module.exports = function(sequelize, DataTypes) {
         }
     }, {
         underscored: true,
-        updatedAt: false
+        updatedAt: false,
+        instanceMethods: {
+            date: function() {
+                return moment.utc(this.dateAt).format('DD MMMM YYYY');
+            }
+        }
     });
 };

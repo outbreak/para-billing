@@ -1,0 +1,68 @@
+<% layout( '_layout') -%>
+
+    <div class="container">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <a class="brand" href="/">Биллинг</a>
+                <ul class="nav">
+                    <li class="active"><a href="#">Home</a></li>
+                </ul>
+                <ul class="nav pull-right">
+                    <li><a href="/logout">Выход</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="span4">Номер лицевого счета</div>
+            <div class="span8">
+                <%= account.id %>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span4">Адрес</div>
+            <div class="span8"><%= account.address() %></div>
+        </div>
+        <div class="row">
+            <div class="span4">Абонент</div>
+            <div class="span8"><%= user.firstName %> <%= user.lastName %></div>
+        </div>
+        <div class="row">
+            <div class="span4">Баланс</div>
+            <div class="span8"><%= account.balance %></div>
+        </div>
+        <div class="row">
+            <div class="span4">Тарифный план</div>
+            <div class="span8"><%= tariff.name %></div>
+        </div>
+
+        <div class="btn-toolbar">
+            <div class="btn-group">
+                <a class="btn btn-primary" href="#">Пополнить баланс</a>
+            </div>
+            <div class="btn-group">
+                <a class="btn" href="#">Сменить тариф</a>
+                <a class="btn btn-danger" href="#">Вызвать мастера</a>
+            </div>
+            <div class="btn-group">
+                <a class="btn btn-link" href="#">Приостановить обслуживание</a>
+            </div>
+        </div>
+
+        <h3>Поступление средств</h3>
+
+        <table class="table table-striped">
+            <tr>
+                <th>Дата</th>
+                <th>Сумма</th>
+            </tr>
+            <% histories.forEach(function(history) { %>
+                <tr>
+                    <td><%= history.date() %></td>
+                    <td><%= history.cost %></td>
+                </tr>
+            <% }); %>
+        </table>
+
+
+    </div>

@@ -45,6 +45,11 @@ module.exports = function(sequelize, DataTypes) {
             defaultValue: 0
         }
     }, {
-        underscored: true
+        underscored: true,
+        instanceMethods: {
+            address: function() {
+                return [this.street, this.home, this.office].join(', ');
+            }
+        }
     });
 };
